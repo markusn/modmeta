@@ -115,15 +115,10 @@ def set_title(filename, title)
     f = open(filename, 'r+')
     bytes = f.bytes.to_a
     f.rewind
-    # Make modifications
-    i = 0
+    # Write!
+    f.pos = offset
     title_bytes.each do |byte|
-      bytes[offset+i] = byte
-      i +=1
-    end
-    # Write file
-    bytes.each do | byte |
-      f.print byte.chr
+      f.putc(byte)
     end
     f.close()
   end
