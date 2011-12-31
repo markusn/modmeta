@@ -100,11 +100,9 @@ end
 def set_title(filename, title)
   offset,len = get_title_offset_len(filename)
   if offset < 0 || len < 0
-    puts "Cannot set title for format"
-    exit(1)
+    raise "Cannot set title for format"
   elsif title.length > len
-    puts "title longer than maximum allowed length #{len}, aborting!"
-    exit(1)
+    raise "title longer than maximum allowed length #{len}, aborting!"
   else # Good to go!
     # Create padded byte array from title
     title_bytes = len.times.map { 0 }
@@ -134,8 +132,7 @@ end
 
 def ensure_format(filename)
   if not FILEFORMATS.include?(File.extname(filename))
-    puts "File format not supported"
-    exit(1)
+    raise "File format not supported"
   end
 end
 
@@ -143,35 +140,38 @@ end
 # M A I N
 ################################################################################
 if __FILE__ == $0
-  # Parse options
-  OptionParser.new do |opts|
-    opts.banner = "Usage: modmeta.rb [options] [filename]"
-    opts.on("-t", "--set-title [TITLE]", String, "Set title") do |title|
-      options[:title] = title
-    end
-    opts.on("-d", "--display", "Display metadata") do |v|
-      options[:display] = v
-    end
-    opts.on_tail("-h", "--help", "Show this message") do
-      puts opts
-      exit
-    end
-  end.parse!
+  begin
+    # Parse options
+    OptionParser.new do |opts|
+      opts.banner = "Usage: modmeta.rb [options] [filename]"
+      opts.on("-t", "--set-title [TITLE]", String, "Set title") do |title|
+        options[:title] = title
+      end
+      opts.on("-d", "--display", "Display metadata") do |v|
+        options[:display] = v
+      end
+      opts.on_tail("-h", "--help", "Show this message") do
+        puts opts
+        exit
+      end
+    end.parse!
 
-  if ARGV.length == 0 # We need at least one file
-    puts "Need to specify filename"
-    exit(1)
-  elsif ARGV.length == 1 # We got one file!
-    filename = ARGV[0]
-    ensure_format(filename)
-    # Do something
-    if options[:display]
-      display_metadata(filename)
-    elsif options[:title]
-      set_title(filename, options[:title])
+    if ARGV.length == 0 # We need at least one file
+      raise "Need to specify filename"
+    elsif ARGV.length == 1 # We got one file!
+      filename = ARGV[0]
+      ensure_format(filename)
+      # Do something
+      if options[:display]
+        display_metadata(filename)
+      elsif options[:title]
+        set_title(filename, options[:title])
+      end
+    else # We got multiple files or a negative number of files (!?)
+      raise "Only one filename should be specified"
     end
-  else # We got multiple files or a negative number of files (!?)
-    puts "Only one filename should be specified"
+  rescue
+    puts $!
     exit(1)
   end
 end
