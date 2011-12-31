@@ -2,7 +2,7 @@
 # encoding: utf-8
 # -*- coding: utf-8 -*-
 ################################################################################
-# Display and/or modify tracker mod data (.xm |.mod |.it)
+# Display and/or modify tracker mod data (.xm |.mod |.it | .s3m)
 #
 # Author::    Markus Näsman  (mailto:markus [at] botten.org)
 # Copyright:: Copyright (c) 2011 Markus Näsman
@@ -19,7 +19,7 @@ require 'optparse'
 ################################################################################
 
 # File formats supported
-FILEFORMATS = ['.xm', '.mod', '.it']
+FILEFORMATS = ['.xm', '.mod', '.it', '.s3m']
 
 # Constants for .xm (http://content.gpwiki.org/index.php/XM)
 XM_TITLE_OFFSET_CONST   = 17
@@ -31,9 +31,13 @@ XM_TRACKER_LENGTH_CONST = 20
 MOD_TITLE_OFFSET_CONST = 0
 MOD_TITLE_LENGTH_CONST = 20
 
-# Constant for .it (guessed...)
+# Constants for .it (guessed...)
 IT_TITLE_OFFSET_CONST = 4
 IT_TITLE_LENGTH_CONST = 20
+
+# Constants for .s3m (http://hackipedia.org/File%20formats/Music/Sample%20based/html/s3mformat.html)
+S3M_TITLE_OFFSET_CONST = 0
+S3M_TITLE_LENGTH_CONST = 28
 
 ################################################################################
 # V A R I A B L E S
@@ -51,6 +55,8 @@ def get_title_offset_len(filename)
     return MOD_TITLE_OFFSET_CONST, MOD_TITLE_LENGTH_CONST
   when ".it"
     return IT_TITLE_OFFSET_CONST, IT_TITLE_LENGTH_CONST
+  when ".s3m"
+    return S3M_TITLE_OFFSET_CONST, S3M_TITLE_LENGTH_CONST
   else
     return -1, -1
   end
