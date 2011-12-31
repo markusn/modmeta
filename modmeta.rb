@@ -97,31 +97,35 @@ def display_attr(filename, attr, offset, len)
   puts "#{attr}: #{v}"
 end
 
-def set_title(filename, title)
-  offset,len = get_title_offset_len(filename)
+def ensure_allowed_set(offset, len, attr, str)
   if offset < 0 || len < 0
     raise "Cannot set title for format"
-  elsif title.length > len
-    raise "title longer than maximum allowed length #{len}, aborting!"
-  else # Good to go!
-    # Create padded byte array from title
-    title_bytes = len.times.map { 0 }
-    i = 0
-    title.each_byte do |byte|
-      title_bytes[i] = byte
-      i +=1
-    end
-    # Read file
-    f = open(filename, 'r+')
-    bytes = f.bytes.to_a
-    f.rewind
-    # Write!
-    f.pos = offset
-    title_bytes.each do |byte|
-      f.putc(byte)
-    end
-    f.close()
+  elsif str.length > len
+    raise "#{attr} longer than maximum allowed length #{len}, aborting!"
   end
+end
+
+def set_title(filename, title)
+  offset,len = get_title_offset_len(filename)
+  ensure_allowed_set(offset, len, "Title", title)
+
+  # Create padded byte array from title
+  title_bytes = len.times.map { 0 }
+  i = 0
+  title.each_byte do |byte|
+    title_bytes[i] = byte
+    i +=1
+  end
+  # Read file
+  f = open(filename, 'r+')
+  bytes = f.bytes.to_a
+  f.rewind
+  # Write!
+  f.pos = offset
+  title_bytes.each do |byte|
+    f.putc(byte)
+  end
+  f.close()
 end
 
 def ensure_format(filename)
