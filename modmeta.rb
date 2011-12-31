@@ -127,6 +127,13 @@ def set_title(filename, title)
   end
 end
 
+def ensure_format(filename)
+  if not FILEFORMATS.include?(File.extname(filename))
+    puts "File format not supported"
+    exit(1)
+  end
+end
+
 ################################################################################
 # M A I N
 ################################################################################
@@ -146,22 +153,20 @@ if __FILE__ == $0
     end
   end.parse!
 
-  # Ensure correct number of files
-  if ARGV.length == 0
+  if ARGV.length == 0 # We need at least one file
     puts "Need to specify filename"
     exit(1)
-  elsif ARGV.length == 1
+  elsif ARGV.length == 1 # We got one file!
     filename = ARGV[0]
-    if not FILEFORMATS.include?(File.extname(filename))
-      puts "File format not supported"
-      exit(1)
-    end
+    ensure_format(filename)
+    # Do something
     if options[:display]
       display_metadata(filename)
     elsif options[:title]
       set_title(filename, options[:title])
     end
-  else
+  else # We got multiple files or a negative amount of files (!?)
     puts "Only one filename should be specified"
+    exit(1)
   end
 end
