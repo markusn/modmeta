@@ -116,11 +116,8 @@ def set_title(filename, title)
     title_bytes[i] = byte
     i +=1
   end
-  # Read file
+  # Write file
   f = open(filename, 'r+')
-  bytes = f.bytes.to_a
-  f.rewind
-  # Write!
   f.pos = offset
   title_bytes.each do |byte|
     f.putc(byte)
