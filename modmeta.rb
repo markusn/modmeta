@@ -165,7 +165,7 @@ if __FILE__ == $0
     elsif options[:title]
       set_title(filename, options[:title])
     end
-  else # We got multiple files or a negative amount of files (!?)
+  else # We got multiple files or a negative number of files (!?)
     puts "Only one filename should be specified"
     exit(1)
   end
