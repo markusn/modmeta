@@ -112,9 +112,9 @@ def set_title(filename, title)
       i +=1
     end
     # Read file
-    f = open(filename, 'r')
+    f = open(filename, 'r+')
     bytes = f.bytes.to_a
-    f.close()
+    f.rewind
     # Make modifications
     i = 0
     title_bytes.each do |byte|
@@ -122,7 +122,6 @@ def set_title(filename, title)
       i +=1
     end
     # Write file
-    f = open(filename, 'w')
     bytes.each do | byte |
       f.print byte.chr
     end
