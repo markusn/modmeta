@@ -96,11 +96,10 @@ def set_title(filename, title)
   if offset < 0 || len < 0
     puts "Cannot set title for format"
     exit(1)
-  end
-  if title.length > len
+  elsif title.length > len
     puts "title longer than maximum allowed length #{len}, aborting!"
     exit(1)
-  else
+  else # Good to go!
     # Create padded byte array from title
     title_bytes = len.times.map { 0 }
     i = 0
