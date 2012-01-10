@@ -10,12 +10,12 @@
 ################################################################################
 
 ################################################################################
-# R E Q U I R E
+# :category:  Require
 ################################################################################
 require 'optparse'
 
 ################################################################################
-# C O N S T A N T S
+# :category: Constants
 ################################################################################
 
 # File formats supported
@@ -40,13 +40,21 @@ S3M_TITLE_OFFSET_CONST = 0
 S3M_TITLE_LENGTH_CONST = 28
 
 ################################################################################
-# V A R I A B L E S
+# :category:  Variables
 ################################################################################
 options = {}
 
 ################################################################################
-# F U N C T I O N S
+# :category: Functions
 ################################################################################
+
+##
+# Get the offset and length for title metadata field in filename
+#
+# * *Args*    :
+#   - +filename+ -> filename to get title offset for
+# * *Returns* :
+#   - title offset, title length | -1,-1 if such does not exist
 def get_title_offset_len(filename)
   case File.extname(filename)
   when ".xm"
@@ -62,6 +70,13 @@ def get_title_offset_len(filename)
   end
 end
 
+##
+# Get the offset and length for tracker metadata field in filename
+#
+# * *Args*    :
+#   - +filename+ -> filename to get tracker offset for
+# * *Returns* :
+#   - tracker offset, tracker length | -1,-1 if such does not exist
 def get_tracker_offset_len(filename)
   case File.extname(filename)
   when ".xm"
@@ -71,21 +86,44 @@ def get_tracker_offset_len(filename)
   end
 end
 
+##
+# Display all metadata for filename
+#
+# * *Args*    :
+#   - +filename+ -> filename to display metadata for
 def display_metadata(filename)
   display_title(filename)
   display_tracker(filename)
 end
 
+##
+# Display title metadata for filename
+#
+# * *Args*    :
+#   - +filename+ -> filename to display title for
 def display_title(filename)
   offset,len = get_title_offset_len(filename)
   display_attr(filename, "title", offset, len)
 end
 
+##
+# Display tracker metadata for filename
+#
+# * *Args*    :
+#   - +filename+ -> filename to display tracker for
 def display_tracker(filename)
   offset,len = get_tracker_offset_len(filename)
   display_attr(filename, "tracker", offset, len)
 end
 
+##
+# Display attr from filename
+#
+# * *Args*    :
+#   - +filename+ -> filename to display attr for
+#   - +attr+ -> name of attribute
+#   - +offset+ -> offset for attr attribute in filename
+#   - +length+ -> length for attr attribute in filename
 def display_attr(filename, attr, offset, len)
   v = "n/a"
   if offset >=0 && len >= 0
@@ -97,6 +135,16 @@ def display_attr(filename, attr, offset, len)
   puts "#{attr}: #{v}"
 end
 
+##
+# Assert that it is possible to set the attribute we're trying to set
+#
+# * *Args*    :
+#   - +attr+ -> name of attribute
+#   - +offset+ -> offset for attr attribute in filename
+#   - +length+ -> length for attr attribute in filename
+#   - +str+ -> string to set
+# * *Raises* :
+#   - +RuntimeError+ -> if offset or len < 0 or str.length > len
 def ensure_allowed_set(offset, len, attr, str)
   if offset < 0 || len < 0
     raise "Cannot set title for format"
@@ -105,6 +153,14 @@ def ensure_allowed_set(offset, len, attr, str)
   end
 end
 
+##
+# Set the title to title for filename
+#
+# * *Args*    :
+#   - +filename+ -> file to set title for
+#   - +title+ -> title string to set
+# * *Raises* :
+#   - +RuntimeError+ -> if title offset or title len < 0 or str len > title len
 def set_title(filename, title)
   offset,len = get_title_offset_len(filename)
   ensure_allowed_set(offset, len, "Title", title)
@@ -125,6 +181,13 @@ def set_title(filename, title)
   f.close()
 end
 
+##
+# Assert that filename has a supported file format
+#
+# * *Args*    :
+#   - +filename+ -> filename to assert file format for
+# * *Raises* :
+#   - +RuntimeError+ -> if filr format is not supported
 def ensure_format(filename)
   if not FILEFORMATS.include?(File.extname(filename))
     raise "File format not supported"
@@ -132,7 +195,7 @@ def ensure_format(filename)
 end
 
 ################################################################################
-# M A I N
+# :category: Main
 ################################################################################
 if __FILE__ == $0
   begin
