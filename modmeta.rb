@@ -187,7 +187,7 @@ end
 # * *Args*    :
 #   - +filename+ -> filename to assert file format for
 # * *Raises* :
-#   - +RuntimeError+ -> if filr format is not supported
+#   - +RuntimeError+ -> if file format is not supported
 def ensure_format(filename)
   if not FILEFORMATS.include?(File.extname(filename))
     raise "File format not supported"
